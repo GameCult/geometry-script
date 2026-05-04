@@ -115,8 +115,12 @@ def tree(name):
                     node_input = node_group.interface.new_socket(socket_type=arg[1][0].socket_type, name=input_name, in_out='INPUT')
                 else:
                     node_input = node_group.inputs.new(arg[1][0].socket_type, input_name)
-            if arg[1][1] != inspect.Parameter.empty:
-                node_input.default_value = arg[1][1]
+            if arg[1][1] != inspect.Parameter.empty and arg[1][1] is not None:
+                try:
+                    node_input.default_value = arg[1][1]
+                except TypeError:
+                    if getattr(node_input, "bl_socket_idname", "") != "NodeSocketMenu":
+                        raise
             if arg[1][2] is not None:
                 if arg[1][2] not in builder_inputs:
                     builder_inputs[arg[1][2]] = signature.parameters[arg[1][2]].annotation()
