@@ -265,6 +265,11 @@ def convert_node_tree(tree):
                     values.append(_convert_value(socket.default_value))
             if not values:
                 continue
+            # Some Blender nodes expose the same conceptual control as both an
+            # RNA enum property and an input socket. Geometry Script maps that
+            # collapsed control to one Python keyword, so prefer the socket
+            # value/link and drop the duplicate property keyword.
+            assignment.props.pop(key, None)
             if len(values) == 1:
                 assignment.arguments[key] = values[0]
                 if output_names:
